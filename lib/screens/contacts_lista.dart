@@ -25,7 +25,7 @@ class ContactsList extends StatelessWidget {
         // modificará p código de callback que adicionaremos ao builder
         future: findAll(),
         builder: (context, snapshot){
-          final List<Contact> contacts = snapshot.data;
+          final List<Contact> contacts = snapshot.data; 
           return ListView.builder(
             itemBuilder: (context, index) {
               // callback
