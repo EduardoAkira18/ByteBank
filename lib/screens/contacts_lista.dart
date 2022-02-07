@@ -1,6 +1,7 @@
 
 // ignore_for_file: prefer_const_constructors
 
+import 'package:bytebank/database/app_database.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:flutter/material.dart';
 
@@ -19,15 +20,21 @@ class ContactsList extends StatelessWidget {
         title: Text('Contacts'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index){
-          final Contact
-          contact = contacts[index];
-          return _ContactItem(contact);
-        },
-        itemCount: contacts.length,
-        // ignore: prefer_const_literals_to_create_immutables        
-      ),
+      body: FutureBuilder(
+        // Executará a busca por todo os contatos com o método FindAll() e, depois da resposta,
+        // modificará p código de callback que adicionaremos ao builder
+        future: findAll(),
+        builder: (context, snapshot){
+          final List<Contact> contacts = snapshot.data;
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              // callback
+              final Contact contact = contacts[index];
+              return _ContactItem(contact);
+            },
+            itemCount: contacts.length,
+        );  
+        },),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
