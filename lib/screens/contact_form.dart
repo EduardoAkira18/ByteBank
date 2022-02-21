@@ -15,6 +15,8 @@ class _ContactFormState extends State<ContactForm> {
 
   final TextEditingController _accountNumberController = TextEditingController();
 
+  final ContactDao _dao = ContactDao();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +62,7 @@ class _ContactFormState extends State<ContactForm> {
                     final int? accountNumber =
                         int.tryParse(_accountNumberController.text);
                     final Contact newContact = Contact(0, name, accountNumber!);
-                    save(newContact).then((id) => Navigator.pop(context));
+                    _dao.save(newContact).then((id) => Navigator.pop(context));
                     Navigator.pop(context, newContact);
                   },
                 ),
