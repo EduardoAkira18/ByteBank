@@ -1,4 +1,3 @@
-
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bytebank/database/app_database.dart';
@@ -9,10 +8,7 @@ import 'package:flutter/material.dart';
 import 'contact_form.dart';
 
 class ContactsList extends StatefulWidget {
-
-
-
-  ContactsList({key}) : super(key: key);
+  const ContactsList({key}) : super(key: key);
 
   @override
   State<ContactsList> createState() => _ContactsListState();
@@ -27,7 +23,7 @@ class _ContactsListState extends State<ContactsList> {
     contacts.add(Contact(0, 'Akira', 1000));
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: Text('Transfer'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: FutureBuilder<List<Contact>>(
@@ -35,7 +31,8 @@ class _ContactsListState extends State<ContactsList> {
         // modificará p código de callback que adicionaremos ao builder
         // Por padrão o future build trabalha com listas dynamicas
         initialData: [],
-        future: Future.delayed(Duration(seconds: 1)).then((value) => _dao.findAll()),
+        future: Future.delayed(Duration(seconds: 1))
+            .then((value) => _dao.findAll()),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -89,7 +86,6 @@ class _ContactsListState extends State<ContactsList> {
 }
 
 class _ContactItem extends StatelessWidget {
-
   final Contact contact;
   const _ContactItem(this.contact);
 
@@ -97,15 +93,14 @@ class _ContactItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(
-          contact.name,
-          style: TextStyle(fontSize: 24.0),
-        ),
-        subtitle: Text(
-          contact.accountNumber.toString(),
-          style: TextStyle(fontSize: 16.0),
-        )
-      ),
+          title: Text(
+            contact.name,
+            style: TextStyle(fontSize: 24.0),
+          ),
+          subtitle: Text(
+            contact.accountNumber.toString(),
+            style: TextStyle(fontSize: 16.0),
+          )),
     );
   }
 }
