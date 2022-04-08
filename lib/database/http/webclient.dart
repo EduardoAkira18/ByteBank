@@ -2,37 +2,21 @@ import 'dart:convert';
 
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/models/transaction.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
-class LoggingInterceptor implements InterceptorContract {
-  @override
-  Future<RequestData> interceptRequest({required RequestData data}) async {
-    print("Request");
-    print("url: ${data.baseUrl}");
-    print("headers: ${data.headers}");
-    print("body: ${data.body}");
-    return data;
-  }
+import 'interceptors/logging_interceptor.dart';
 
-  @override
-  Future<ResponseData> interceptResponse({required ResponseData data}) async {
-    print("Reponse");
-    print("status code: ${data.statusCode}");
-    print("headers: ${data.headers}");
-    print("body: ${data.body}");
-    return data;
-  }
-}
+Client client = InterceptedClient.build(
+  interceptors: [LoggingInterceptor()],
+);
+
+const String baseUrl = "http://192.168.20.103:8080/transactions";
 
 Future<List<Transaction>> findAll() async {
-  Client client = InterceptedClient.build(
-    interceptors: [LoggingInterceptor()],
-  );
   final url =
       //Usando ipv4 para o emulador conseguir acessar também.
-      Uri.https("http://192.168.20.103:8080/transactions", "transactions");
+      Uri.https(baseUrl, "");
 
   final Response response = await client.get(url).timeout(
         Duration(seconds: 5),
@@ -49,4 +33,39 @@ Future<List<Transaction>> findAll() async {
     transactions.add(transaction);
   }
   return transactions;
+}
+
+// Post
+Future<Transaction> save(Transaction transaction) async {
+  //Decode = pegar la do json e transformar o objeto
+  //Encode = transformar o objeto para json
+
+  final Map<String, dynamic> transactionMap = {
+    'value': transaction.value,
+    'contact': {
+      'name': transaction.contact.name,
+      'accountNumber': transaction.contact.accountNumber
+    }
+  };
+
+  final String transactionJson = jsonEncode(transactionMap);
+
+  final url = Uri.https(baseUrl, "");
+
+  final Response response = await client.post(
+    url,
+    headers: {'Content-type': 'application/json', 'password': '1000'},
+    body: transactionJson,
+  );
+
+  Map<String, dynamic> json = jsonDecode(response.body);
+  final Map<String, dynamic> contactJson = json["contact"];
+  return Transaction(
+    json["value"],
+    Contact(
+      0,
+      json["name"],
+      json["accountNumber"],
+    ),
+  );
 }

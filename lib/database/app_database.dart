@@ -1,4 +1,3 @@
-import 'package:bytebank/models/contact.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -13,7 +12,6 @@ Future<Database> getDatabase() async {
     },
     version: 1,
 //    onDowngrade: onDatabaseDowngradeDelete,
-    
   );
 //  return getDatabasesPath().then((dbPath) {
 //    final String path = join(dbPath, 'bytebank.db');
